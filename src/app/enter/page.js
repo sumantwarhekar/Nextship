@@ -14,8 +14,6 @@ export default function Enter() {
     const { user, username, loading: profileLoading } = useContext(UserContext);
     const [, authLoading, error] = useAuthState(auth);
 
-    console.log('Enter page state:', { user: !!user, username, profileLoading, authLoading });
-
     // Show loading state while Firebase is initializing or profile is loading
     if (authLoading || profileLoading) {
       return (
