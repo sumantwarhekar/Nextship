@@ -1,95 +1,92 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import Link from "next/link";
+import { useState, useEffect } from 'react';
+import PostFeed from '../../components/PostFeed';
+import Loader from '../../components/Loader';
+import { firestore, postToJSON } from '../../lib/firebase';
+import { collection, where, limit, getDocs, query } from 'firebase/firestore';
+
+const LIMIT = 10;
+
+// Client Component - fetches data after mount
+interface Post {
+  id?: string;
+  title?: string;
+  content?: string;
+  published?: boolean;
+  createdAt?: number | { toMillis?: () => number };
+  updatedAt?: number | { toMillis?: () => number };
+  [key: string]: unknown;
+}
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  useEffect(() => {
+    getPosts().then(fetchedPosts => {
+      setPosts(fetchedPosts);
+      setLoading(false);
+    });
+  }, []);
+
+  return (
+    <main className="container">
+      <div className="feed">
+        <Loader show={loading} />
+        
+        {!loading && <PostFeed posts={posts} admin={false} />}
+
+        {!loading && posts.length === 0 && (
+          <div className="text-center">
+            <p>No posts yet. Sign up and create the first post!</p>
+            <Link href="/enter">
+              <button className="btn-blue">Get Started</button>
+            </Link>
+          </div>
+        )}
+      </div>
+    </main>
   );
+}
+
+async function getPosts() {
+  try {
+    // Get a list of users first
+    const usersRef = collection(firestore, 'users');
+    const usersSnapshot = await getDocs(query(usersRef, limit(10)));
+    
+    let allPosts: Post[] = [];
+    
+    // Fetch posts from each user
+    for (const userDoc of usersSnapshot.docs) {
+      try {
+        const postsRef = collection(firestore, `users/${userDoc.id}/posts`);
+        const postsQuery = query(
+          postsRef,
+          where('published', '==', true),
+          limit(5)
+        );
+        const postsSnapshot = await getDocs(postsQuery);
+        const userPosts = postsSnapshot.docs.map(postToJSON).filter(post => post !== null);
+        allPosts = allPosts.concat(userPosts);
+      } catch {
+        // Skip this user's posts if there's an error
+      }
+    }
+    
+    // Sort by creation date (newest first)
+    allPosts.sort((a, b) => {
+      const aTime = typeof a.createdAt === 'number' ? a.createdAt : a.createdAt?.toMillis?.() || 0;
+      const bTime = typeof b.createdAt === 'number' ? b.createdAt : b.createdAt?.toMillis?.() || 0;
+      return bTime - aTime;
+    });
+    
+    return allPosts.slice(0, LIMIT);
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    // Return empty array instead of failing
+    return [];
+  }
 }

@@ -39,3 +39,24 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Firebase
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
+debug-*.js
+temp-*.js
+
+# OS
+Thumbs.db
+.DS_Store

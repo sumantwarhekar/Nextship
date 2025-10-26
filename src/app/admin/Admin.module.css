@@ -1,0 +1,129 @@
+/* Admin styles for managing posts */
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.container section {
+  flex: 1;
+  min-width: 0;
+}
+
+.container aside {
+  flex-shrink: 0;
+  width: 200px;
+  background: white;
+  border: 1px solid var(--color-gray);
+  border-radius: 8px;
+  padding: 1rem;
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+}
+
+.adminMain {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.input {
+  width: 100%;
+  background: white;
+  border: 1px solid var(--color-gray);
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1.25rem;
+  font-family: inherit;
+}
+
+.textarea {
+  width: 100%;
+  background: white;
+  border: 1px solid var(--color-gray);
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  min-height: 400px;
+  resize: vertical;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.checkbox input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.checkbox label {
+  margin: 0;
+  cursor: pointer;
+}
+
+.fieldset {
+  border: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.hidden {
+  display: none;
+}
+
+.preview {
+  background: white;
+  border: 1px solid var(--color-gray);
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 1rem 0;
+}
+
+.wordcount {
+  color: var(--color-gray);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.smallButton {
+  padding: 0.5rem 1rem !important;
+  font-size: 0.9rem !important;
+  margin: 0.25rem 0.5rem 0.25rem 0 !important;
+}
+
+.container aside button {
+  width: 100%;
+  margin: 0.25rem 0;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .container aside {
+    width: 100%;
+    position: static;
+  }
+}
