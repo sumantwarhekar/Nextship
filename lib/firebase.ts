@@ -4,13 +4,13 @@ import { getFirestore, collection, query, where, limit, getDocs, Timestamp, serv
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDwB3p6uCSfy1m1q97GiVxCo9bKau97zYg",
-    authDomain: "nextship-9a064.firebaseapp.com",
-    projectId: "nextship-9a064",
-    storageBucket: "nextship-9a064.firebasestorage.app",
-    messagingSenderId: "846246146238",
-    appId: "1:846246146238:web:427949d669a3dfc9e42eef",
-    measurementId: "G-X4C55839FJ"
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 }
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
