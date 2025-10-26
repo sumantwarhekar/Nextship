@@ -118,9 +118,3 @@ To get a local copy up and running, follow these simple steps.
     ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result!
-
----
-
-## 🎓 Acknowledgements
-
-This project was built following an advanced Next.js and Firebase course. All concepts and features are based on the curriculum provided.
